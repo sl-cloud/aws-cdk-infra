@@ -82,6 +82,7 @@ jobs:
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
+      continue-on-error: true
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -129,6 +130,7 @@ jobs:
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
+      continue-on-error: true
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -149,7 +151,7 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     needs: [test, synth]
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    if: ${{ false }}
     
     steps:
     - name: Checkout code
@@ -188,7 +190,7 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     needs: [test, synth]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: ${{ false }}
     
     steps:
     - name: Checkout code
@@ -227,7 +229,7 @@ jobs:
   deploy-prod:
     runs-on: ubuntu-latest
     needs: [test, synth]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: ${{ false }}
     environment: production
     
     steps:

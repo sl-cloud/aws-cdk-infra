@@ -8,6 +8,7 @@ from aws_cdk import (
     aws_ec2 as ec2,
     aws_kms as kms,
     aws_logs as logs,
+    aws_secretsmanager as secretsmanager,
     RemovalPolicy,
     Tags,
 )
@@ -135,7 +136,7 @@ class OpenSearchStack(Stack):
                         "MasterUserName": Constants.DEFAULT_MASTER_USERNAME,
                         "MasterUserPassword": self.master_password_secret.secret_value_from_json(
                             "password"
-                        ).to_string(),
+                        ).unsafe_unwrap(),
                     },
                 },
                 "DomainEndpointOptions": {
@@ -168,7 +169,6 @@ class OpenSearchStack(Stack):
 
     def _create_master_password_secret(self):
         """Create a secure master password secret for OpenSearch."""
-        from aws_cdk import aws_secretsmanager as secretsmanager
 
         # Generate password securely in Secrets Manager
         master_password_secret = secretsmanager.Secret(

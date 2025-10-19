@@ -52,11 +52,12 @@ def test_iam_stack_creation(app, dev_config, mock_vpc_stack, mock_secrets_stack)
         "MockOpenSearchStack",
         (),
         {
+            "domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain",
             "domain": type(
                 "MockDomain",
                 (),
                 {"domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain"},
-            )()
+            )(),
         },
     )()
 
@@ -121,11 +122,12 @@ def test_lambda_execution_role(app, dev_config, mock_vpc_stack, mock_secrets_sta
         "MockOpenSearchStack",
         (),
         {
+            "domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain",
             "domain": type(
                 "MockDomain",
                 (),
                 {"domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain"},
-            )()
+            )(),
         },
     )()
 
@@ -199,11 +201,12 @@ def test_application_role(app, dev_config, mock_vpc_stack, mock_secrets_stack):
         "MockOpenSearchStack",
         (),
         {
+            "domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain",
             "domain": type(
                 "MockDomain",
                 (),
                 {"domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain"},
-            )()
+            )(),
         },
     )()
 
@@ -281,11 +284,12 @@ def test_sqs_access_policy(app, dev_config, mock_vpc_stack, mock_secrets_stack):
         "MockOpenSearchStack",
         (),
         {
+            "domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain",
             "domain": type(
                 "MockDomain",
                 (),
                 {"domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain"},
-            )()
+            )(),
         },
     )()
 
@@ -366,11 +370,12 @@ def test_ssm_parameters_created(app, dev_config, mock_vpc_stack, mock_secrets_st
         "MockOpenSearchStack",
         (),
         {
+            "domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain",
             "domain": type(
                 "MockDomain",
                 (),
                 {"domain_arn": "arn:aws:es:us-east-1:123456789012:domain/test-domain"},
-            )()
+            )(),
         },
     )()
 

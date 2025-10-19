@@ -132,6 +132,17 @@ class IamStack(Stack):
             ],
         )
 
+        opensearch_domain_arn = getattr(self.opensearch_stack, "domain_arn", None)
+        if not opensearch_domain_arn and getattr(self.opensearch_stack, "domain", None):
+            opensearch_domain_arn = getattr(
+                self.opensearch_stack.domain, "domain_arn", None
+            )
+
+        if not opensearch_domain_arn:
+            raise ValueError(
+                "OpenSearch domain ARN is not available from the provided stack"
+            )
+
         # OpenSearch access policy
         self.opensearch_access_policy = iam.Policy(
             self,
@@ -147,7 +158,7 @@ class IamStack(Stack):
                         "es:ESHttpDelete",
                         "es:ESHttpHead",
                     ],
-                    resources=[f"{self.opensearch_stack.domain.domain_arn}/*"],
+                    resources=[f"{opensearch_domain_arn}/*"],
                 ),
                 iam.PolicyStatement(
                     effect=iam.Effect.ALLOW,
@@ -155,7 +166,7 @@ class IamStack(Stack):
                         "es:DescribeDomain",
                         "es:DescribeDomains",
                     ],
-                    resources=[self.opensearch_stack.domain.domain_arn],
+                    resources=[opensearch_domain_arn],
                 ),
             ],
         )
