@@ -41,12 +41,12 @@ def test_stack(app, dev_config):
 
 class MockVpcStack(Stack):
     """Mock VPC stack for testing other stacks."""
-    
+
     def __init__(self, scope: Construct, construct_id: str, config: Config, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
-        
+
         from aws_cdk import aws_ec2 as ec2
-        
+
         # Create a mock VPC with all subnet types
         self.vpc = ec2.Vpc(
             self,
@@ -74,7 +74,7 @@ class MockVpcStack(Stack):
             ],
             nat_gateways=1,
         )
-        
+
         # Create mock security groups
         self.web_security_group = ec2.SecurityGroup(
             self,
@@ -82,28 +82,28 @@ class MockVpcStack(Stack):
             vpc=self.vpc,
             description="Mock web security group",
         )
-        
+
         self.app_security_group = ec2.SecurityGroup(
             self,
             "MockAppSecurityGroup",
             vpc=self.vpc,
             description="Mock app security group",
         )
-        
+
         self.db_security_group = ec2.SecurityGroup(
             self,
             "MockDbSecurityGroup",
             vpc=self.vpc,
             description="Mock db security group",
         )
-        
+
         self.opensearch_security_group = ec2.SecurityGroup(
             self,
             "MockOpenSearchSecurityGroup",
             vpc=self.vpc,
             description="Mock OpenSearch security group",
         )
-        
+
         self.lambda_security_group = ec2.SecurityGroup(
             self,
             "MockLambdaSecurityGroup",
@@ -114,31 +114,31 @@ class MockVpcStack(Stack):
 
 class MockSecretsStack(Stack):
     """Mock Secrets stack for testing other stacks."""
-    
+
     def __init__(self, scope: Construct, construct_id: str, config: Config, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
-        
+
         from aws_cdk import aws_secretsmanager as secretsmanager
-        
+
         # Create mock secrets
         self.rds_credentials = secretsmanager.Secret(
             self,
             "MockRdsCredentials",
             secret_name="mock-rds-credentials",
         )
-        
+
         self.api_keys = secretsmanager.Secret(
             self,
             "MockApiKeys",
             secret_name="mock-api-keys",
         )
-        
+
         self.app_config = secretsmanager.Secret(
             self,
             "MockAppConfig",
             secret_name="mock-app-config",
         )
-        
+
         self.db_connection_strings = secretsmanager.Secret(
             self,
             "MockDbConnectionStrings",

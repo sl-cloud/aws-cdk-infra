@@ -22,7 +22,7 @@ from infra.constructs.ssm_outputs import SsmOutputs
 
 class IamStack(Stack):
     """IAM stack with least-privilege roles and policies."""
-    
+
     def __init__(
         self,
         scope: Construct,
@@ -34,21 +34,21 @@ class IamStack(Stack):
         **kwargs,
     ):
         super().__init__(scope, construct_id, **kwargs)
-        
+
         self.config = config
         self.rds_stack = rds_stack
         self.sqs_stack = sqs_stack
         self.opensearch_stack = opensearch_stack
-        
+
         # Create IAM roles and policies
         self._create_roles_and_policies()
-        
+
         # Create SSM outputs
         self._create_outputs()
-    
+
     def _create_roles_and_policies(self):
         """Create IAM roles and policies with least-privilege access."""
-        
+
         # Lambda execution role
         self.lambda_execution_role = iam.Role(
             self,
@@ -57,11 +57,15 @@ class IamStack(Stack):
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
             description="Execution role for Lambda functions",
             managed_policies=[
-                iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaBasicExecutionRole"),
-                iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaVPCAccessExecutionRole"),
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "service-role/AWSLambdaBasicExecutionRole"
+                ),
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "service-role/AWSLambdaVPCAccessExecutionRole"
+                ),
             ],
         )
-        
+
         # Application role for EC2/ECS tasks
         self.application_role = iam.Role(
             self,
@@ -73,7 +77,7 @@ class IamStack(Stack):
             ),
             description="Role for application services",
         )
-        
+
         # RDS access policy
         self.rds_access_policy = iam.Policy(
             self,
@@ -99,7 +103,7 @@ class IamStack(Stack):
                 ),
             ],
         )
-        
+
         # SQS access policy
         self.sqs_access_policy = iam.Policy(
             self,
@@ -127,7 +131,7 @@ class IamStack(Stack):
                 ),
             ],
         )
-        
+
         # OpenSearch access policy
         self.opensearch_access_policy = iam.Policy(
             self,
@@ -155,7 +159,7 @@ class IamStack(Stack):
                 ),
             ],
         )
-        
+
         # Secrets Manager access policy
         self.secrets_access_policy = iam.Policy(
             self,
@@ -176,7 +180,7 @@ class IamStack(Stack):
                 ),
             ],
         )
-        
+
         # CloudWatch logs policy
         self.cloudwatch_logs_policy = iam.Policy(
             self,
@@ -196,20 +200,20 @@ class IamStack(Stack):
                 ),
             ],
         )
-        
+
         # Attach policies to roles
         self.lambda_execution_role.attach_inline_policy(self.rds_access_policy)
         self.lambda_execution_role.attach_inline_policy(self.sqs_access_policy)
         self.lambda_execution_role.attach_inline_policy(self.opensearch_access_policy)
         self.lambda_execution_role.attach_inline_policy(self.secrets_access_policy)
         self.lambda_execution_role.attach_inline_policy(self.cloudwatch_logs_policy)
-        
+
         self.application_role.attach_inline_policy(self.rds_access_policy)
         self.application_role.attach_inline_policy(self.sqs_access_policy)
         self.application_role.attach_inline_policy(self.opensearch_access_policy)
         self.application_role.attach_inline_policy(self.secrets_access_policy)
         self.application_role.attach_inline_policy(self.cloudwatch_logs_policy)
-        
+
         # Add tags to all IAM resources
         for resource in [
             self.lambda_execution_role,
@@ -222,68 +226,68 @@ class IamStack(Stack):
         ]:
             for key, value in self.config.tags.items():
                 Tags.of(resource).add(key, value)
-    
+
     def _create_outputs(self):
         """Create SSM parameters and CloudFormation outputs."""
-        
+
         ssm_outputs = SsmOutputs(
             self,
             "SsmOutputs",
             config=self.config,
             stack_name="iam",
         )
-        
+
         # Role ARNs
         ssm_outputs.create_parameter_and_output(
             "lambda-execution-role-arn",
             self.lambda_execution_role.role_arn,
             "Lambda execution role ARN",
         )
-        
+
         ssm_outputs.create_parameter_and_output(
             "application-role-arn",
             self.application_role.role_arn,
             "Application role ARN",
         )
-        
+
         # Policy names (inline policies don't have ARNs)
         ssm_outputs.create_parameter_and_output(
             "rds-access-policy-name",
             self.rds_access_policy.policy_name,
             "RDS access policy name",
         )
-        
+
         ssm_outputs.create_parameter_and_output(
             "sqs-access-policy-name",
             self.sqs_access_policy.policy_name,
             "SQS access policy name",
         )
-        
+
         ssm_outputs.create_parameter_and_output(
             "opensearch-access-policy-name",
             self.opensearch_access_policy.policy_name,
             "OpenSearch access policy name",
         )
-        
+
         ssm_outputs.create_parameter_and_output(
             "secrets-access-policy-name",
             self.secrets_access_policy.policy_name,
             "Secrets access policy name",
         )
-        
+
         ssm_outputs.create_parameter_and_output(
             "cloudwatch-logs-policy-name",
             self.cloudwatch_logs_policy.policy_name,
             "CloudWatch logs policy name",
         )
-        
+
         # Role names (for applications to reference)
         ssm_outputs.create_parameter_and_output(
             "lambda-execution-role-name",
             self.lambda_execution_role.role_name,
             "Lambda execution role name",
         )
-        
+
         ssm_outputs.create_parameter_and_output(
             "application-role-name",
             self.application_role.role_name,
