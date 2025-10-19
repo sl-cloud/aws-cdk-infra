@@ -4,7 +4,7 @@ Provides environment-specific settings for dev, staging, and prod deployments.
 """
 
 from dataclasses import dataclass
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
 
 
 @dataclass
@@ -92,6 +92,30 @@ class Config:
             enable_detailed_monitoring=True,
         ),
     }
+
+    env_name: str
+    env_config: EnvironmentConfig
+
+    # Commonly accessed attributes exposed directly on the config
+    region: str
+    project_name: str
+    vpc_cidr: str
+    enable_nat_gateway_per_az: bool
+    enable_flow_logs: bool
+    rds_instance_class: str
+    rds_min_capacity: float
+    rds_max_capacity: float
+    rds_backup_retention_days: int
+    rds_multi_az: bool
+    opensearch_instance_type: str
+    opensearch_instance_count: int
+    opensearch_ebs_volume_size: int
+    sqs_visibility_timeout_seconds: int
+    sqs_message_retention_seconds: int
+    sqs_max_receive_count: int
+    secrets_rotation_days: int
+    enable_xray_tracing: bool
+    enable_detailed_monitoring: bool
 
     def __init__(self, env_name: str):
         """Initialize configuration for the specified environment."""

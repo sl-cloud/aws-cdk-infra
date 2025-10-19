@@ -34,6 +34,7 @@ class SsmOutputs(Construct):
         self.stack_name = stack_name
         self.description = description or f"SSM parameters for {stack_name}"
 
+        self.kms_key: kms.IKey
         if kms_key is None:
             # Create dedicated KMS key for SSM parameter encryption
             self.kms_key = kms.Key(
@@ -180,7 +181,7 @@ def get_parameter_value(
     default_value: Optional[str] = None,
 ) -> str:
     """Helper function to retrieve SSM parameter value (for use in client applications)."""
-    import boto3
+    import boto3  # type: ignore[import-untyped]
 
     ssm_client = boto3.client("ssm", region_name=config.region)
     parameter_name = config.get_ssm_parameter_name(stack_name, resource_name)
